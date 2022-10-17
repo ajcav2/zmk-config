@@ -2,63 +2,68 @@
  * Copyright (c) 2020 The ZMK Contributors
  *
  * SPDX-License-Identifier: MIT
- *
  * ajcav2@alex-desktop:~/zmk/app$ source ../zephyr/zephyr-env.sh
  * ajcav2@alex-desktop:~/zmk/app$ west build -d build/left -p -b nice_nano_v2 -- -DSHIELD=corne_left
  * ajcav2@alex-desktop:~/zmk/app$ west build -d build/right -p -b nice_nano_v2 -- -DSHIELD=corne_right
  */
- 
+
 #include <behaviors.dtsi>
 #include <dt-bindings/zmk/keys.h>
 #include <dt-bindings/zmk/bt.h>
 #include <dt-bindings/zmk/outputs.h>
+#include <dt-bindings/zmk/dynamic-macros.h>
+#include <dt-bindings/zmk/ext_power.h>
 
+#define DEFAULT 0
+#define LOWER 1
 #define RAISE 2
-#define LOWER 3
-#define CUSTOM 1
+#define BLUETOOTH 3
 
 / {
-    keymap {
-        compatible = "zmk,keymap";
-
-
-        default_layer {
-            bindings = <
-    &lt RAISE TAB             &kp Q   &kp W     &kp E    &kp R            &kp T                  &kp Y        &kp U        &kp I      &kp O    &kp P     &kp BACKSPACE
-    &mt LCTRL INSERT    &kp A   &kp S     &kp D    &kp F            &kp G                  &kp H        &kp J        &kp K      &kp L    &kp SEMI  &kp APOSTROPHE
-    &mt LEFT_SHIFT HOME &kp Z   &kp X     &kp C    &kp V            &kp B                  &kp N        &kp M        &kp COMMA  &kp DOT  &kp FSLH  &mt RIGHT_SHIFT END
-                                          &kp LALT &kp LGUI  &lt CUSTOM SPACE                   &lt LOWER ENTER  &kp MINUS    &kp GRAVE
-            >;
+    macros {
+        dynMacro: dyn-macro {
+            label = "ZM_dynamic-macro";
+            compatible = "zmk,behavior-dynamic-macro";
+            #binding-cells = <1>;
         };
-
-        layer_custom {
-            bindings = <
-    &kp ESC     &kp NUMBER_1      &kp LC(LEFT)    &kp UP_ARROW    &kp LC(RIGHT)    &kp NUMBER_5         &kp NUMBER_6    &kp NUMBER_7  &kp NUMBER_8  &kp NUMBER_9 &kp EQUAL &kp DELETE
-    &kp CAPS    &kp K_VOLUME_UP   &kp LEFT_ARROW  &kp DOWN_ARROW  &kp RIGHT_ARROW  &trans               &kp KP_MULTIPLY &kp NUMBER_4  &kp NUMBER_5  &kp NUMBER_6 &kp PLUS  &kp BACKSLASH
-    &kp K_MUTE  &kp C_VOLUME_DOWN &trans          &trans          &trans           &trans               &kp FSLH        &kp NUMBER_1  &kp NUMBER_2  &kp NUMBER_3 &kp MINUS &kp GRAVE
-                                               &trans      &trans          &trans               &mo RAISE &kp NUMBER_0        &kp DOT  
-            >;
-        };
-
-        layer_raise {
-            bindings = <
-    &kp ESC     &kp NUMBER_1  &kp NUMBER_2  &kp NUMBER_3  &kp NUMBER_4  &kp NUMBER_5            &kp NUMBER_6  &kp NUMBER_7  &kp NUMBER_8  &kp NUMBER_9  &kp NUMBER_0  &kp DELETE
-    &bt BT_CLR  &bt BT_SEL 0  &bt BT_SEL 1  &bt BT_SEL 2  &bt BT_SEL 3  &bt BT_SEL 4            &kp F1        &kp F2        &kp F3       &kp F4        &kp F5         &kp F6
-    &bt BT_PRV  &bt BT_NXT    &out OUT_BLE  &out OUT_USB  &reset        &bootloader             &kp F7        &kp F8        &kp F9       &kp F10       &kp F11        &kp F12    
-                                            &trans        &trans        &trans                  &trans        &trans        &trans
-            >;
-        };
-
-        layer_lower {
-            bindings = <
-    &trans    &kp EXCL &kp AT    &kp HASH  &kp DLLR   &kp PRCNT           &kp CARET   &kp AMPS   &kp KP_MULTIPLY &kp LPAR          &kp RPAR          &kp DELETE
-    &kp F1    &kp F2   &kp F3    &kp F4    &kp F5     &kp F6              &kp MINUS   &kp EQUAL  &kp LBKT        &kp LEFT_BRACKET  &kp RIGHT_BRACKET &kp PIPE
-    &kp F7    &kp F8   &kp F9    &kp F10   &kp F11    &kp F12             &kp UNDER   &kp PLUS   &kp LBRC        &kp LEFT_BRACE    &kp RIGHT_BRACE   &kp TILDE
-                                 &trans    &trans     &trans              &trans      &trans     &trans
-            >;
-        };
-        
-
-
     };
+};
+
+/ {
+        keymap {
+                compatible = "zmk,keymap";
+
+                default_layer {
+                        bindings = <
+   &lt BLUETOOTH TAB   &kp Q &kp W &kp E    &kp R           &kp T            &kp Y           &kp U     &kp I     &kp O    &kp P    &kp BSPC
+   &mt RCTRL INSERT    &kp A &kp S &kp D    &kp F           &kp G            &kp H           &kp J     &kp K     &kp L    &kp SEMI &kp SQT
+   &mt LEFT_SHIFT HOME &kp Z &kp X &kp C    &kp V           &kp B            &kp N           &kp M     &kp COMMA &kp DOT  &kp FSLH &mt RIGHT_SHIFT END
+                                   &kp LGUI &mt LALT DELETE &lt RAISE SPACE  &lt LOWER ENTER &kp MINUS &kp EQUAL
+                        >;
+                };
+                lower_layer {
+                        bindings = <
+   &kp GRAVE &kp EXCL &kp AT    &kp HASH  &kp DLLR   &kp PRCNT  &kp CARET &kp AMPS  &kp KP_MULTIPLY  &kp LPAR &kp RPAR &kp BSPC
+   &kp F1    &kp F2   &kp F3    &kp F4    &kp F5     &kp F6     &trans    &trans    &trans           &kp LBKT &kp RBKT &trans
+   &kp F7    &kp F8   &kp F9    &kp F10   &kp F11    &kp F12    &trans    &trans    &trans           &kp LBRC &kp RBRC &trans
+                    	        &trans    &trans     &trans     &trans    &trans    &trans
+                       >;
+                };
+                raise_layer {
+                        bindings = <
+   &kp TAB      &kp N1       &kp N2       &kp N3       &kp N4       &kp N5          &kp N6             &kp N7       &kp N8       &kp N9    &kp N0    &kp DELETE
+   &kp LC(LEFT) &kp LEFT     &kp DOWN     &kp UP       &kp RIGHT    &kp LC(RIGHT)   &dynMacro RECORD   &kp N4       &kp N5       &kp N6    &kp CAPS  &kp BSLH
+   &kp LSHFT    &trans       &trans       &trans       &trans       &trans          &dynMacro PLAY     &kp N1       &kp N2       &kp N3    &kp RCTRL &trans
+                          	          &trans       &trans       &trans          &kp N0             &kp DOT      &kp DOT  
+                        >;
+                };
+                bluetooth_layer {
+                        bindings = <
+   &trans      &ext_power EP_TOG  &trans        &trans        &trans        &trans            &trans &trans &trans &trans &trans &kp DOT
+   &bt BT_CLR  &bt BT_SEL 0       &bt BT_SEL 1  &bt BT_SEL 2  &bt BT_SEL 3  &bt BT_SEL 4      &trans &trans &trans &trans &trans &trans
+   &bt BT_PRV  &bt BT_NXT         &out OUT_BLE  &out OUT_USB  &reset        &bootloader       &trans &trans &trans &trans &trans &trans
+                    	                             &trans &trans   &trans   &trans   &trans    &trans
+                        >;
+                };
+        };
 };
