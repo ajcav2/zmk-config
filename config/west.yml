@@ -1,6 +1,6 @@
 manifest:
   remotes:
-    - name: nickconway
+    - name: zmkfirmware
       url-base: https://github.com/nickconway
   projects:
     - name: zmk
